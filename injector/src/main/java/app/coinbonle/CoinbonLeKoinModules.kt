@@ -1,10 +1,8 @@
 package app.coinbonle
 
+import app.coinbonle.data.dataModule
+
 val coinbonLeKoinModules = listOf(
-    airshipModule,
-    analyticsModule,
-    coreModule,
     dataModule,
-    domainModule,
-    sipsModule
+    domainModule
 )

@@ -1,6 +1,7 @@
 plugins {
-    id 'com.android.library'
-    id 'kotlin-android'
+    id "com.android.library"
+    id "kotlin-android"
+    id "com.google.devtools.ksp"  version "1.6.10-1.0.2"
 }
 
 android {
@@ -8,34 +9,46 @@ android {
 
     defaultConfig {
         minSdk 24
-        targetSdk 31
-        versionCode 1
-        versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
     }
 
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-    kotlinOptions {
-        jvmTarget = '1.8'
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
 }
 
 dependencies {
 
+    implementation project(":domain")
+
+    implementation KotlinX.coroutines.android
+
     implementation AndroidX.core.ktx
     implementation AndroidX.appCompat
-    implementation 'io.insert-koin:koin-android:_'
+
+    implementation AndroidX.room.runtime
+    ksp(AndroidX.room.compiler)
+    implementation AndroidX.room.ktx
+
+
+    implementation "com.dropbox.mobile.store:store4:_"
+    implementation Splitties.appctx
+    implementation Koin.android
+    implementation JakeWharton.timber
+
+    implementation Square.okHttp3
+    implementation Square.okHttp3.loggingInterceptor
+    implementation Square.retrofit2
+    implementation Square.moshi
+    ksp Square.moshi.kotlinCodegen
+    implementation Square.retrofit2.converter.moshi
+
+    implementation Square.picasso
+
+
     testImplementation Testing.junit4
     androidTestImplementation AndroidX.test.ext.junit
     androidTestImplementation AndroidX.test.espresso.core

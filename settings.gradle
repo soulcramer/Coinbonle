@@ -1,18 +1,10 @@
 plugins {
     // See https://jmfayard.github.io/refreshVersions
-    id("de.fayard.refreshVersions") version("0.20.0")
+    id("de.fayard.refreshVersions") version("0.30.1")
 }
-//
-//dependencyResolutionManagement {
-//    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-//    repositories {
-//        google()
-//        mavenCentral()
-//    }
-//}
 
 rootProject.name = "Coinbonle"
+include ":injector"
 include ":app"
 include ":data"
 include ":domain"
-include ":injector"

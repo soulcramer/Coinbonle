@@ -1,6 +1,6 @@
 plugins {
-    id 'com.android.library'
-    id 'kotlin-android'
+    id "com.android.library"
+    id "kotlin-android"
 }
 
 android {
@@ -8,35 +8,22 @@ android {
 
     defaultConfig {
         minSdk 24
-        targetSdk 31
-        versionCode 1
-        versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
     }
 
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
 }
 
 dependencies {
+    implementation KotlinX.coroutines.android
 
     implementation AndroidX.core.ktx
     implementation AndroidX.appCompat
-    implementation Google.android.material
-    testImplementation Testing.junit4
-    androidTestImplementation AndroidX.test.ext.junit
-    androidTestImplementation AndroidX.test.espresso.core
+
+    implementation "com.dropbox.mobile.store:store4:_"
+    implementation Splitties.appctx
+    implementation Koin.android
+    implementation JakeWharton.timber
+
 }

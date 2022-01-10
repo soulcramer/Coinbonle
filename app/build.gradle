@@ -49,6 +49,9 @@ android {
 
 dependencies {
 
+    implementation project(":domain")
+    implementation project(":injector")
+
     implementation AndroidX.core.ktx
     implementation AndroidX.appCompat
     implementation Google.android.material
@@ -56,10 +59,13 @@ dependencies {
     implementation AndroidX.lifecycle.liveDataKtx
     implementation AndroidX.lifecycle.viewModelKtx
 
-    implementation Square.retrofit2
-    implementation(Square.moshi)
-    ksp(Square.moshi.kotlinCodegen)
+    implementation "org.uniflow-kt:uniflow-core:_"
+    implementation "org.uniflow-kt:uniflow-android:_"
 
+
+    implementation Splitties.appctx
+    implementation Koin.android
+    implementation JakeWharton.timber
 
     debugImplementation(Square.leakCanary.android)
     implementation(Square.leakCanary.plumber)

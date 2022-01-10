@@ -1,8 +1,5 @@
-package app.coinbonle.domain.models
+package app.coinbonle.models
 
-import com.squareup.moshi.JsonClass
-
-@JsonClass(generateAdapter = true)
 data class Album(
     val albumId: Int,
     val id: Int,
