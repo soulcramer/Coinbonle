@@ -23,7 +23,6 @@ import org.koin.core.component.get
 import org.koin.test.mock.declareMock
 import timber.log.Timber
 
-// Deprecation for runBlockingTestApi
 @OptIn(ExperimentalCoroutinesApi::class)
 @Suppress("MaxLineLength", "MaximumLineLength")
 class AlbumsRepositoryStoreTest : CoinbonLeTest() {
@@ -42,7 +41,6 @@ class AlbumsRepositoryStoreTest : CoinbonLeTest() {
 
     private val localAlbum1 = AlbumLocal(1, 1, "title 1", "url 1", "thumbnail 1")
     private val localAlbum2 = AlbumLocal(1, 2, "title 2", "url 2", "thumbnail 2")
-    private val localAlbum3 = AlbumLocal(2, 3, "title 3", "url 3", "thumbnail 3")
 
     override fun setUp() {
         super.setUp()
@@ -51,9 +49,8 @@ class AlbumsRepositoryStoreTest : CoinbonLeTest() {
 
         albumsRepositoryStore = AlbumsRepositoryStore(
             coroutineRule.scope,
-            coroutineRule.testDispatcherProvider,
             mapper = get(),
-            remoteCache = get(),
+            remoteCache = declareMock(),
             albumsApi,
             albumsDao
         )

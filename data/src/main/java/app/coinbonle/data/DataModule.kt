@@ -59,7 +59,7 @@ val dataModule = module {
     }
 
     single<AlbumsRepository> {
-        AlbumsRepositoryStore(GlobalScope, get(), get(), get(), get(), get())
+        AlbumsRepositoryStore(/*Store default*/ GlobalScope, get(), get(), get(), get())
     }
 
     single { AlbumsMapper() }

@@ -1,6 +1,5 @@
 package app.coinbonle.data
 
-import app.coinbonle.core.DispatcherProvider
 import app.coinbonle.data.local.AlbumDao
 import app.coinbonle.data.remote.AlbumsApi
 import app.coinbonle.models.Album
@@ -18,7 +17,6 @@ import kotlin.time.ExperimentalTime
 @OptIn(ExperimentalCoroutinesApi::class)
 class AlbumsRepositoryStore(
     scope: CoroutineScope,
-    private val dispatcherProvider: DispatcherProvider,
     private val mapper: AlbumsMapper,
     private val remoteCache: Cache,
     private val albumsApi: AlbumsApi,

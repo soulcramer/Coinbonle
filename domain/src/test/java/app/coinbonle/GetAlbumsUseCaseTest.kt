@@ -40,7 +40,7 @@ class GetAlbumsUseCaseTest : CoinbonLeTest() {
     fun `GIVEN loading albums from fetcher WHEN receiving an empty data THEN NoNewData response should be discarded`() = runTest {
         val loading = StoreResponse.Loading(ResponseOrigin.Fetcher)
         val noNewData = StoreResponse.NoNewData(ResponseOrigin.Fetcher)
-        val error = StoreResponse.Error.Message("kae error", ResponseOrigin.Fetcher)
+        val error = StoreResponse.Error.Message("une error", ResponseOrigin.Fetcher)
 
         every { mockAlbumsStore.stream(any()) } returns flowOf(loading, noNewData, error)
 
@@ -48,6 +48,7 @@ class GetAlbumsUseCaseTest : CoinbonLeTest() {
         val albumsResponse = getAlbumsUseCase.invoke(1)
 
         albumsResponse.test {
+            Truth.assertThat(awaitItem()).isEqualTo(loading)
             Truth.assertThat(awaitItem()).isEqualTo(error)
             awaitComplete()
         }
