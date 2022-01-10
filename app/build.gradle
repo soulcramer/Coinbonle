@@ -49,22 +49,22 @@ android {
 
 dependencies {
 
-    implementation "androidx.core:core-ktx:1.7.0"
-    implementation "androidx.appcompat:appcompat:1.4.0"
-    implementation "com.google.android.material:material:1.4.0"
-    implementation "androidx.constraintlayout:constraintlayout:2.1.2"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.4.0"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0"
+    implementation AndroidX.core.ktx
+    implementation AndroidX.appCompat
+    implementation Google.android.material
+    implementation AndroidX.constraintLayout
+    implementation AndroidX.lifecycle.liveDataKtx
+    implementation AndroidX.lifecycle.viewModelKtx
 
-    implementation "com.squareup.retrofit2:retrofit:2.9.0"
-    implementation("com.squareup.moshi:moshi:1.13.0")
-//    ksp("com.squareup.moshi:moshi-kotlin-codegen:1.13.0")
+    implementation Square.retrofit2
+    implementation(Square.moshi)
+    ksp(Square.moshi.kotlinCodegen)
 
 
-    debugImplementation("com.squareup.leakcanary:leakcanary-android:2.8")
-    implementation("com.squareup.leakcanary:plumber-android:2.8")
+    debugImplementation(Square.leakCanary.android)
+    implementation(Square.leakCanary.plumber)
 
-    testImplementation "junit:junit:4.+"
-    androidTestImplementation "androidx.test.ext:junit:1.1.2"
-    androidTestImplementation "androidx.test.espresso:espresso-core:3.3.0"
+    testImplementation Testing.junit4
+    androidTestImplementation AndroidX.test.ext.junit
+    androidTestImplementation AndroidX.test.espresso.core
 }

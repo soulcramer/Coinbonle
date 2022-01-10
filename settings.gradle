@@ -1,13 +1,18 @@
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        google()
-        mavenCentral()
-        jcenter() // Warning: this repository is going to shut down soon
-    }
+plugins {
+    // See https://jmfayard.github.io/refreshVersions
+    id("de.fayard.refreshVersions") version("0.20.0")
 }
+//
+//dependencyResolutionManagement {
+//    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+//    repositories {
+//        google()
+//        mavenCentral()
+//    }
+//}
+
 rootProject.name = "Coinbonle"
-include ':app'
-include ':data'
-include ':domain'
-include ':injector'
+include ":app"
+include ":data"
+include ":domain"
+include ":injector"
