@@ -59,6 +59,9 @@ dependencies {
     implementation AndroidX.lifecycle.liveDataKtx
     implementation AndroidX.lifecycle.viewModelKtx
 
+    implementation "com.airbnb.android:epoxy:_"
+    kapt "com.airbnb.android:epoxy-processor:_"
+
     implementation "org.uniflow-kt:uniflow-core:_"
     implementation "org.uniflow-kt:uniflow-android:_"
 

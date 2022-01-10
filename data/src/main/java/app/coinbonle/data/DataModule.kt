@@ -25,7 +25,7 @@ val dataModule = module {
 
         Retrofit.Builder()
             .client(client)
-            .baseUrl("https://static.leboncoin.fr/img/shared/") // technical-test.json
+            .baseUrl("https://static.leboncoin.fr/img/shared/")
             .addConverterFactory(get())
             .build()
     }
