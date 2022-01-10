@@ -1,10 +1,11 @@
 package app.coinbonle.data
 
 import app.coinbonle.data.core.CoinbonLeTest
+import app.coinbonle.models.Album
 import com.google.common.truth.Truth
 import org.junit.Test
 
-class ExampleUnitTest : CoinbonLeTest() {
+class AlbumMapperTest : CoinbonLeTest() {
 
     private lateinit var albumsMapper: AlbumsMapper
 
@@ -29,6 +30,10 @@ class ExampleUnitTest : CoinbonLeTest() {
         val albums = albumsMapper.mapFromRemote(remoteAlbums)
 
         Truth.assertThat(albums).hasSize(remoteAlbums.size)
-        Truth.assertThat(albums).hasSize(remoteAlbums.size)
+        Truth.assertThat(albums).isInOrder { o1, o2 ->
+            val firstAlbum = o1 as Album
+            val secondAlbum = o2 as Album
+            if (firstAlbum.albumId >= secondAlbum.albumId && firstAlbum.id >= secondAlbum.id) 1 else -1
+        }
     }
 }
