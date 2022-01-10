@@ -50,6 +50,14 @@ dependencies {
 
 
     testImplementation Testing.junit4
-    androidTestImplementation AndroidX.test.ext.junit
-    androidTestImplementation AndroidX.test.espresso.core
+    testImplementation Testing.robolectric
+
+    testImplementation AndroidX.test.core
+    testImplementation AndroidX.test.ext.truth
+
+    testImplementation KotlinX.coroutines.test
+    testImplementation Testing.mockK
+
+    testImplementation Koin.test
+    testImplementation Koin.junit4
 }

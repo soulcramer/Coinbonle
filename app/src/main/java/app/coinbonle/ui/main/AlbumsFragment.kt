@@ -16,12 +16,10 @@ class AlbumsFragment : Fragment(R.layout.albums_fragment) {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(AlbumsViewModel, container, false)
+        return inflater.inflate(Binding, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        watchMcDoViewModels(getMcDoViewModels(), this)
     }
 }

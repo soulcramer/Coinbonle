@@ -1,16 +1,34 @@
 package app.coinbonle.data
 
-import org.junit.Assert.assertEquals
+import app.coinbonle.data.core.CoinbonLeTest
+import com.google.common.truth.Truth
 import org.junit.Test
 
-/**
- * Example local unit test, which will execute on the development machine (host).
- *
- * See [testing documentation](http://d.android.com/tools/testing).
- */
-class ExampleUnitTest {
+class ExampleUnitTest : CoinbonLeTest() {
+
+    private lateinit var albumsMapper: AlbumsMapper
+
+    override fun setUp() {
+        super.setUp()
+        albumsMapper = AlbumsMapper()
+    }
+
     @Test
-    fun addition_isCorrect() {
-        assertEquals(4, 2 + 2)
+    fun `GIVEN remote albums received in a defined order WHEN mapping them to app albums THEN the order should stay the same`() {
+        val remoteAlbums = buildList<AlbumRemote> {
+            repeat(3) { albumIndex ->
+                repeat(5) { index ->
+                    AlbumRemote(
+                        albumId = albumIndex,
+                        id = index
+                    )
+                }
+            }
+        }
+
+        val albums = albumsMapper.mapFromRemote(remoteAlbums)
+
+        Truth.assertThat(albums).hasSize(remoteAlbums.size)
+        Truth.assertThat(albums).hasSize(remoteAlbums.size)
     }
 }

@@ -25,5 +25,4 @@ dependencies {
     implementation Splitties.appctx
     implementation Koin.android
     implementation JakeWharton.timber
-
 }
