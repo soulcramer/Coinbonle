@@ -51,7 +51,9 @@ class AlbumsRepositoryStoreTest : CoinbonLeTest() {
 
         albumsRepositoryStore = AlbumsRepositoryStore(
             coroutineRule.scope,
+            coroutineRule.testDispatcherProvider,
             mapper = get(),
+            remoteCache = get(),
             albumsApi,
             albumsDao
         )
