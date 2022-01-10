@@ -1,8 +1,8 @@
 package app.coinbonle.data
 
-import app.coinbonle.data.core.CoinbonLeTest
 import app.coinbonle.data.local.AlbumLocal
 import app.coinbonle.data.remote.AlbumRemote
+import app.coinbonle.data.util.CoinbonLeTest
 import app.coinbonle.models.Album
 import com.google.common.truth.Truth
 import org.junit.Test

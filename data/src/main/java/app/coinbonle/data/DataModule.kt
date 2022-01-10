@@ -5,6 +5,8 @@ import app.coinbonle.data.local.AppDatabase
 import app.coinbonle.data.remote.AlbumsApi
 import app.coinbonle.repositories.AlbumsRepository
 import com.squareup.moshi.Moshi
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -16,7 +18,15 @@ import splitties.init.appCtx
 import timber.log.Timber
 import java.io.File
 
+@OptIn(DelicateCoroutinesApi::class)
 val dataModule = module {
+
+    single {
+        Cache(
+            directory = File(appCtx.cacheDir, "http_cache"),
+            maxSize = 50L * 1024L * 1024L // 50 MiB
+        )
+    }
 
     single {
         val logging = HttpLoggingInterceptor {
@@ -25,12 +35,7 @@ val dataModule = module {
         logging.setLevel(HttpLoggingInterceptor.Level.BASIC)
         OkHttpClient.Builder().run {
             addInterceptor(logging)
-            cache(
-                Cache(
-                    directory = File(appCtx.cacheDir, "http_cache"),
-                    maxSize = 50L * 1024L * 1024L // 50 MiB
-                )
-            )
+            cache(get())
             build()
         }
     }
@@ -54,7 +59,7 @@ val dataModule = module {
     }
 
     single<AlbumsRepository> {
-        AlbumsRepositoryStore(get(), get(), get())
+        AlbumsRepositoryStore(GlobalScope, get(), get(), get(), get(), get())
     }
 
     single { AlbumsMapper() }

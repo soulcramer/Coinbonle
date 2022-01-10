@@ -1,4 +1,4 @@
-package app.coinbonle.data.core
+package app.coinbonle.data.util
 
 import timber.log.Timber
 

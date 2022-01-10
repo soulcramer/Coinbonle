@@ -36,13 +36,14 @@ dependencies {
     implementation AndroidX.core.ktx
     implementation AndroidX.appCompat
 
-    implementation "androidx.paging:paging-runtime:_"
+    implementation AndroidX.paging.runtime
     implementation AndroidX.room.runtime
     ksp(AndroidX.room.compiler)
     implementation AndroidX.room.ktx
 
 
     implementation "com.dropbox.mobile.store:store4:_"
+    implementation "com.dropbox.mobile.store:multicast:_"
     implementation Splitties.appctx
     implementation Koin.android
     implementation JakeWharton.timber
@@ -62,6 +63,8 @@ dependencies {
     testImplementation AndroidX.test.ext.truth
 
     testImplementation KotlinX.coroutines.test
+    testImplementation KotlinX.coroutines.debug
+    testImplementation CashApp.turbine
     testImplementation Testing.mockK
 
     testImplementation Koin.test

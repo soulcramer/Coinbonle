@@ -19,25 +19,26 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:menu="@menu/albums_menu"
             app:title="@string/app_name" />
+
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/progress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            app:indicatorColor="?colorSecondary"
+            app:trackColor="?colorSecondaryVariant" />
     </com.google.android.material.appbar.AppBarLayout>
 
-
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/swipeRefreshLayout"
+    <app.coinbonle.ui.main.AlbumsRecyclerView
+        android:id="@+id/albums_recyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:paddingVertical="@dimen/spacing_small"
+        android:scrollbars="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/appBarLayout"
-        tools:layout_editor_absoluteX="0dp">
-
-        <app.coinbonle.ui.main.AlbumsRecyclerView
-            android:id="@+id/albums_recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingVertical="@dimen/spacing_small"
-            android:scrollbars="vertical"
-            tools:itemCount="10"
-            tools:listitem="@layout/album_row" />
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        tools:itemCount="10"
+        tools:listitem="@layout/album_row" />
 </androidx.constraintlayout.widget.ConstraintLayout>

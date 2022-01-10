@@ -2,6 +2,7 @@ package app.coinbonle.ui.main
 
 import android.os.Parcelable
 import androidx.lifecycle.SavedStateHandle
+import app.coinbonle.interactors.DeleteCacheUseCase
 import app.coinbonle.interactors.GetAlbumsUseCase
 import app.coinbonle.models.Album
 import com.dropbox.android.external.store4.ResponseOrigin
@@ -13,82 +14,79 @@ import io.uniflow.core.flow.data.UIState
 import io.uniflow.core.flow.onState
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.channels.BufferOverflow.DROP_OLDEST
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.transformLatest
 import kotlinx.parcelize.Parcelize
 import timber.log.Timber
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class AlbumsViewModel(
-    handle: SavedStateHandle,
-    private val getAlbumsUseCase: GetAlbumsUseCase
+    handle: SavedStateHandle, // Paging is needed otherwise it'll crash ass data is too big on process restoration
+    private val getAlbumsUseCase: GetAlbumsUseCase,
+    private val deleteCacheUseCase: DeleteCacheUseCase,
 ) : AndroidDataFlow(savedStateHandle = handle, defaultState = AlbumsState()) {
-    // TODO-Scott (06 janv. 2022): The data will be too large to restore it, we should split it with paging
 
-    // SharedFlow to be able to re-emit the same value
-    private val refreshFlow = MutableSharedFlow<Boolean>(
-        replay = 1, // We need
-        extraBufferCapacity = 1,
-        onBufferOverflow = DROP_OLDEST
-    )
-
-    private val pageFlow = MutableSharedFlow<Int>(
-        replay = 1,
-        extraBufferCapacity = 1,
-        onBufferOverflow = DROP_OLDEST
-    )
+    private val pageFlow = MutableStateFlow(1)
 
     init {
         onFlow(
             flow = {
-                pageFlow.onStart { Timber.d("pageflow start") }
-                    .onEach { Timber.d("pageflow $it") }
-                    .combine(refreshFlow) { page, shouldRefresh ->
-                        page to shouldRefresh
-                    }.transformLatest { (page, shouldRefresh) ->
-                        emitAll(getAlbumsUseCase(shouldRefresh, page))
-                    }
+                pageFlow.transformLatest { page ->
+                    emitAll(getAlbumsUseCase(page))
+                }
             },
             doAction = { albumsResponse ->
                 processAlbumResponse(albumsResponse)
             }
         )
-        refreshFlow.tryEmit(false)
         pageFlow.tryEmit(1)
     }
 
     override suspend fun onError(error: Exception, currentState: UIState) {
-        // Ignore cancellation exception as their part of the framework
+        // IGNORE cancellation exception as their part of the framework
         if (error is CancellationException) return
         Timber.e(error)
 
-        // TODO: 06/01/2022 add less generic errors handling
-        //      sendEvent(Event.DisplayGenericError)
-    }
-
-    fun refreshAlbums() {
-        refreshFlow.tryEmit(true)
+        sendEvent(AlbumsEvent.DisplayGenericError(error))
     }
 
     fun loadNextPage() {
-        pageFlow.tryEmit(pageFlow.replayCache.last() + 1)
+        pageFlow.value += 1
+    }
+
+    fun deleteCache() = action {
+        deleteCacheUseCase()
+        pageFlow.value = 1
     }
 
     private suspend fun processAlbumResponse(albumsResponse: StoreResponse<List<Album>>) {
         onState<AlbumsState> {
-            setState(it.copy(isLoading = true))
-        }
-        albumsResponse.throwIfError()
-
-        val albums = albumsResponse.requireData()
-        onState<AlbumsState> {
-            setState(it.copy(albums = albums, isLoading = false))
-            sendEvent(AlbumsEvent.AlbumsOrigin(albumsResponse.origin))
+            val newState = when (albumsResponse) {
+                is StoreResponse.Loading -> it.copy(isLoading = true)
+                is StoreResponse.Data -> {
+                    if (albumsResponse.origin == ResponseOrigin.Fetcher) {
+                        it.copy(
+                            albums = albumsResponse.value,
+                            isLoading = false
+                        )
+                    } else {
+                        it.copy(albums = albumsResponse.value)
+                    }
+                }
+                is StoreResponse.Error -> {
+                    val error = when (albumsResponse) {
+                        is StoreResponse.Error.Exception -> albumsResponse.error
+                        is StoreResponse.Error.Message -> RuntimeException(albumsResponse.message)
+                    }
+                    sendEvent(AlbumsEvent.DisplayGenericError(error))
+                    if (albumsResponse.origin == ResponseOrigin.Fetcher) {
+                        it.copy(isLoading = false)
+                    } else it
+                }
+                else -> error("Other state is NoNewData but we already filtered the in the usecase")
+            }
+            setState(newState)
         }
     }
 }
@@ -102,6 +100,5 @@ data class AlbumsState(
 
 sealed class AlbumsEvent : UIEvent() {
     object FailRefresh : AlbumsEvent()
-    object NoNewData : AlbumsEvent()
-    data class AlbumsOrigin(val origin: ResponseOrigin) : AlbumsEvent()
+    data class DisplayGenericError(val error: Throwable) : AlbumsEvent()
 }

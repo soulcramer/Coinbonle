@@ -1,155 +1,55 @@
 package app.coinbonle
 
+import app.cash.turbine.test
 import app.coinbonle.core.CoinbonLeTest
 import app.coinbonle.interactors.GetAlbumsUseCase
-import app.coinbonle.models.Album
+import app.coinbonle.repositories.AlbumsRepository
+import app.coinbonle.repositories.AlbumsStore
+import com.dropbox.android.external.store4.ResponseOrigin
+import com.dropbox.android.external.store4.StoreResponse
 import com.google.common.truth.Truth
+import io.mockk.every
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.test.runTest
 import org.junit.Test
+import org.koin.test.mock.declareMock
 
+@OptIn(ExperimentalCoroutinesApi::class)
+@Suppress("MaxLineLength", "MaximumLineLength")
 class GetAlbumsUseCaseTest : CoinbonLeTest() {
 
     private lateinit var getAlbumsUseCase: GetAlbumsUseCase
+    private lateinit var albumsRepository: AlbumsRepository
+    private lateinit var mockAlbumsStore: AlbumsStore
 
     override fun setUp() {
         super.setUp()
-        albumsMapper = AlbumsMapper()
+        mockAlbumsStore = declareMock()
+        albumsRepository = object : AlbumsRepository {
+            override val albumsStore = mockAlbumsStore
+        }
+        getAlbumsUseCase = GetAlbumsUseCase(albumsRepository, coroutineRule.testDispatcherProvider)
     }
 
+    /**
+     * We get NoNewData when the server give us an empty result,
+     * ideally it should be considered an error way before we get here.
+     */
     @Test
-    fun `GIVEN remote albums received in a defined order WHEN mapping them to app albums THEN the order should stay the same`() {
-        val remoteAlbums = buildList<AlbumRemote> {
-            repeat(3) { albumIndex ->
-                repeat(5) { index ->
-                    AlbumRemote(
-                        albumId = albumIndex,
-                        id = index
-                    )
-                }
-            }
+    fun `GIVEN loading albums from fetcher WHEN receiving an empty data THEN NoNewData response should be discarded`() = runTest {
+        val loading = StoreResponse.Loading(ResponseOrigin.Fetcher)
+        val noNewData = StoreResponse.NoNewData(ResponseOrigin.Fetcher)
+        val error = StoreResponse.Error.Message("kae error", ResponseOrigin.Fetcher)
+
+        every { mockAlbumsStore.stream(any()) } returns flowOf(loading, noNewData, error)
+
+        // Parameters doesn't matter here, we trust Store to give us the expected results
+        val albumsResponse = getAlbumsUseCase.invoke(1)
+
+        albumsResponse.test {
+            Truth.assertThat(awaitItem()).isEqualTo(error)
+            awaitComplete()
         }
-
-        val albums = albumsMapper.mapFromRemote(remoteAlbums)
-
-        Truth.assertThat(albums).hasSize(remoteAlbums.size)
-        Truth.assertThat(albums).isInOrder { o1, o2 ->
-            val firstAlbum = o1 as Album
-            val secondAlbum = o2 as Album
-            if (firstAlbum.albumId >= secondAlbum.albumId && firstAlbum.id >= secondAlbum.id) 1 else -1
-        }
-    }
-
-    @Test
-    fun `GIVEN remote albums received WHEN mapping them to app albums THEN the values should be in the right fields`() {
-        val remoteAlbums = listOf(
-            AlbumRemote(
-                albumId = 1,
-                id = 12,
-                title = "title",
-                url = "url",
-                thumbnailUrl = "thumbnailUrl",
-            )
-        )
-
-        val albums = albumsMapper.mapFromRemote(remoteAlbums)
-
-        Truth.assertThat(albums.first().albumId).isEqualTo(1)
-        Truth.assertThat(albums.first().id).isEqualTo(12)
-        Truth.assertThat(albums.first().title).isEqualTo("title")
-        Truth.assertThat(albums.first().pictureUrl).isEqualTo("url")
-        Truth.assertThat(albums.first().thumbnailUrl).isEqualTo("thumbnailUrl")
-    }
-
-    @Test
-    fun `GIVEN local albums in db WHEN mapping them to app albums THEN the order should stay the same`() {
-        val localAlbums = buildList<AlbumLocal> {
-            repeat(3) { albumIndex ->
-                repeat(5) { index ->
-                    AlbumLocal(
-                        albumPage = albumIndex,
-                        id = index,
-                        title = "title",
-                        url = "url",
-                        thumbnailUrl = "thumbnailUrl",
-                    )
-                }
-            }
-        }
-
-        val albums = albumsMapper.mapFromLocal(localAlbums)
-
-        Truth.assertThat(albums).hasSize(localAlbums.size)
-        Truth.assertThat(albums).isInOrder { o1, o2 ->
-            val firstAlbum = o1 as Album
-            val secondAlbum = o2 as Album
-            if (firstAlbum.albumId >= secondAlbum.albumId && firstAlbum.id >= secondAlbum.id) 1 else -1
-        }
-    }
-
-    @Test
-    fun `GIVEN local albums in db WHEN mapping them to app albums THEN the values should be in the right fields`() {
-        val localAlbums = listOf(
-            AlbumLocal(
-                albumPage = 1,
-                id = 12,
-                title = "title",
-                url = "url",
-                thumbnailUrl = "thumbnailUrl",
-            )
-        )
-
-        val albums = albumsMapper.mapFromLocal(localAlbums)
-
-        Truth.assertThat(albums.first().albumId).isEqualTo(1)
-        Truth.assertThat(albums.first().id).isEqualTo(12)
-        Truth.assertThat(albums.first().title).isEqualTo("title")
-        Truth.assertThat(albums.first().pictureUrl).isEqualTo("url")
-        Truth.assertThat(albums.first().thumbnailUrl).isEqualTo("thumbnailUrl")
-    }
-
-    @Test
-    fun `GIVEN app albums received from server WHEN mapping them to local albums THEN the order should stay the same`() {
-        val albums = buildList<Album> {
-            repeat(3) { albumIndex ->
-                repeat(5) { index ->
-                    Album(
-                        albumId = albumIndex,
-                        id = index,
-                        title = "title",
-                        pictureUrl = "url",
-                        thumbnailUrl = "thumbnailUrl",
-                    )
-                }
-            }
-        }
-
-        val localAlbums = albumsMapper.mapToLocal(albums)
-
-        Truth.assertThat(localAlbums).hasSize(albums.size)
-        Truth.assertThat(localAlbums).isInOrder { o1, o2 ->
-            val firstAlbum = o1 as Album
-            val secondAlbum = o2 as Album
-            if (firstAlbum.albumId >= secondAlbum.albumId && firstAlbum.id >= secondAlbum.id) 1 else -1
-        }
-    }
-
-    @Test
-    fun `GIVEN app albums received from server WHEN mapping them to local albums THEN the values should be in the right fields`() {
-        val albums = listOf(
-            Album(
-                albumId = 1,
-                id = 12,
-                title = "title",
-                pictureUrl = "url",
-                thumbnailUrl = "thumbnailUrl",
-            )
-        )
-
-        val localAlbums = albumsMapper.mapToLocal(albums)
-
-        Truth.assertThat(localAlbums.first().albumPage).isEqualTo(1)
-        Truth.assertThat(localAlbums.first().id).isEqualTo(12)
-        Truth.assertThat(localAlbums.first().title).isEqualTo("title")
-        Truth.assertThat(localAlbums.first().url).isEqualTo("url")
-        Truth.assertThat(localAlbums.first().thumbnailUrl).isEqualTo("thumbnailUrl")
     }
 }

@@ -1,9 +1,7 @@
 package app.coinbonle.ui.main
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import app.coinbonle.R
@@ -16,32 +14,33 @@ import splitties.snackbar.snack
 class AlbumsFragment : Fragment(R.layout.albums_fragment) {
 
     private val viewModel: AlbumsViewModel by viewModel()
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        return AlbumsFragmentBinding.inflate(inflater, container, false).root
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val binding = AlbumsFragmentBinding.bind(view)
 
-        binding.swipeRefreshLayout.setOnRefreshListener {
-            viewModel.refreshAlbums()
+        binding.toolbar.setOnMenuItemClickListener { menuItem ->
+            if (menuItem.itemId == R.id.delete_cache) {
+                viewModel.deleteCache()
+                true
+            } else {
+                false
+            }
         }
 
         onEvents(viewModel) { event ->
             when (event) {
-                is AlbumsEvent.AlbumsOrigin -> view.snack(event.origin.name)
+                is AlbumsEvent.DisplayGenericError -> view.snack(event.error.message ?: "generic error message")
             }
         }
 
         onStates(viewModel) {
             val state = it as AlbumsState
-            binding.swipeRefreshLayout.isRefreshing = state.isLoading
-            if (state.isLoading) return@onStates
+            if (state.isLoading) {
+                binding.progress.show()
+                return@onStates
+            }
+            binding.progress.hide()
 
             binding.albumsRecyclerView.clearOnScrollListeners()
             val layoutManager = binding.albumsRecyclerView.layoutManager as LinearLayoutManager

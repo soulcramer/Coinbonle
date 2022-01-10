@@ -36,6 +36,7 @@ dependencies {
     testImplementation AndroidX.test.ext.truth
 
     testImplementation KotlinX.coroutines.test
+    testImplementation CashApp.turbine
     testImplementation Testing.mockK
 
     testImplementation Koin.test

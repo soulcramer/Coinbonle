@@ -1,4 +1,4 @@
-package app.coinbonle.data.core
+package app.coinbonle.data.util
 
 import androidx.annotation.CallSuper
 import androidx.test.platform.app.InstrumentationRegistry

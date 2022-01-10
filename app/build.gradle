@@ -62,7 +62,6 @@ dependencies {
     implementation AndroidX.lifecycle.viewModelKtx
 
     implementation "com.airbnb.android:epoxy:_"
-    implementation AndroidX.swipeRefreshLayout
     kapt "com.airbnb.android:epoxy-processor:_"
 
     implementation "org.uniflow-kt:uniflow-core:_"
@@ -73,7 +72,7 @@ dependencies {
 
     implementation Splitties.appctx
     implementation Splitties.resources
-    implementation "com.louiscad.splitties:splitties-snackbar:_"
+    implementation Splitties.snackbar
     implementation Splitties.views
     implementation Koin.android
     implementation JakeWharton.timber

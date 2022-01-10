@@ -17,11 +17,13 @@ class AlbumsRecyclerView @JvmOverloads constructor(
     }
 
     fun submitData(albums: List<Album>) {
+        if (albums.isEmpty()) clear()
+
         withModels {
             albums.forEach { album ->
                 albumItemView {
                     id(album.id)
-                    this.album(album)
+                    album(album)
                 }
             }
         }
