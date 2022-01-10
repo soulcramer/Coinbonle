@@ -5,10 +5,10 @@ plugins {
 }
 
 android {
-    compileSdk 31
+    compileSdk buildConfig.compileSdk
 
     defaultConfig {
-        minSdk 24
+        minSdk buildConfig.minSdk
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
