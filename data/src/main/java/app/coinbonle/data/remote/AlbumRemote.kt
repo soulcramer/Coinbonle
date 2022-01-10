@@ -1,4 +1,4 @@
-package app.coinbonle.data
+package app.coinbonle.data.remote
 
 import com.squareup.moshi.JsonClass
 

@@ -40,12 +40,10 @@ class AlbumItemView @JvmOverloads constructor(
         album?.let {
             Picasso.get()
                 .load(it.thumbnailUrl)
-                .centerCrop() // Could be centerInside too
                 .into(binding.albumCoverImageView, object : Callback {
                     override fun onSuccess() {
                         Picasso.get()
                             .load(it.thumbnailUrl)
-                            .centerCrop()
                             .placeholder(binding.albumCoverImageView.drawable)
                             .into(binding.albumCoverImageView)
                     }

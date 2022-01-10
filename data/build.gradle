@@ -36,6 +36,7 @@ dependencies {
     implementation AndroidX.core.ktx
     implementation AndroidX.appCompat
 
+    implementation "androidx.paging:paging-runtime:_"
     implementation AndroidX.room.runtime
     ksp(AndroidX.room.compiler)
     implementation AndroidX.room.ktx

@@ -13,8 +13,12 @@ import io.uniflow.core.flow.data.UIState
 import io.uniflow.core.flow.onState
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.channels.BufferOverflow.DROP_OLDEST
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.transformLatest
 import kotlinx.parcelize.Parcelize
 import timber.log.Timber
@@ -27,19 +31,35 @@ class AlbumsViewModel(
     // TODO-Scott (06 janv. 2022): The data will be too large to restore it, we should split it with paging
 
     // SharedFlow to be able to re-emit the same value
-    private val refreshFlow = MutableStateFlow(false)
+    private val refreshFlow = MutableSharedFlow<Boolean>(
+        replay = 1, // We need
+        extraBufferCapacity = 1,
+        onBufferOverflow = DROP_OLDEST
+    )
+
+    private val pageFlow = MutableSharedFlow<Int>(
+        replay = 1,
+        extraBufferCapacity = 1,
+        onBufferOverflow = DROP_OLDEST
+    )
 
     init {
         onFlow(
             flow = {
-                refreshFlow.transformLatest { shouldRefresh ->
-                    emitAll(getAlbumsUseCase(shouldRefresh))
-                }
+                pageFlow.onStart { Timber.d("pageflow start") }
+                    .onEach { Timber.d("pageflow $it") }
+                    .combine(refreshFlow) { page, shouldRefresh ->
+                        page to shouldRefresh
+                    }.transformLatest { (page, shouldRefresh) ->
+                        emitAll(getAlbumsUseCase(shouldRefresh, page))
+                    }
             },
             doAction = { albumsResponse ->
                 processAlbumResponse(albumsResponse)
             }
         )
+        refreshFlow.tryEmit(false)
+        pageFlow.tryEmit(1)
     }
 
     override suspend fun onError(error: Exception, currentState: UIState) {
@@ -51,8 +71,12 @@ class AlbumsViewModel(
         //      sendEvent(Event.DisplayGenericError)
     }
 
-    fun refreshNews() {
-        refreshFlow.value = !refreshFlow.value
+    fun refreshAlbums() {
+        refreshFlow.tryEmit(true)
+    }
+
+    fun loadNextPage() {
+        pageFlow.tryEmit(pageFlow.replayCache.last() + 1)
     }
 
     private suspend fun processAlbumResponse(albumsResponse: StoreResponse<List<Album>>) {

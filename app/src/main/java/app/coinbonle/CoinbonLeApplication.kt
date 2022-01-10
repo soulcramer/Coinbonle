@@ -26,7 +26,7 @@ class CoinbonLeApplication : Application() {
         }
         setupLog()
         setupDarkMode()
-        setupStrictMode()
+//        setupStrictMode()
     }
 
     private fun setupDarkMode() {

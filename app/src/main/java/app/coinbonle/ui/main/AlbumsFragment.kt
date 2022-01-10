@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import app.coinbonle.R
 import app.coinbonle.databinding.AlbumsFragmentBinding
 import io.uniflow.android.livedata.onEvents
@@ -15,7 +16,6 @@ import splitties.snackbar.snack
 class AlbumsFragment : Fragment(R.layout.albums_fragment) {
 
     private val viewModel: AlbumsViewModel by viewModel()
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -29,7 +29,7 @@ class AlbumsFragment : Fragment(R.layout.albums_fragment) {
         val binding = AlbumsFragmentBinding.bind(view)
 
         binding.swipeRefreshLayout.setOnRefreshListener {
-            viewModel.refreshNews()
+            viewModel.refreshAlbums()
         }
 
         onEvents(viewModel) { event ->
@@ -42,6 +42,17 @@ class AlbumsFragment : Fragment(R.layout.albums_fragment) {
             val state = it as AlbumsState
             binding.swipeRefreshLayout.isRefreshing = state.isLoading
             if (state.isLoading) return@onStates
+
+            binding.albumsRecyclerView.clearOnScrollListeners()
+            val layoutManager = binding.albumsRecyclerView.layoutManager as LinearLayoutManager
+            val pagingScrollListener = object : PaginationScrollListener(layoutManager) {
+                override fun loadMoreItems() {
+                    isLoading = true
+                    viewModel.loadNextPage()
+                }
+            }
+            pagingScrollListener.isLoading = state.isLoading
+            binding.albumsRecyclerView.addOnScrollListener(pagingScrollListener)
 
             binding.albumsRecyclerView.submitData(state.albums)
         }

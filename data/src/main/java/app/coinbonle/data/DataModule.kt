@@ -1,14 +1,20 @@
 package app.coinbonle.data
 
+import androidx.room.Room
+import app.coinbonle.data.local.AppDatabase
+import app.coinbonle.data.remote.AlbumsApi
 import app.coinbonle.repositories.AlbumsRepository
 import com.squareup.moshi.Moshi
+import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.create
+import splitties.init.appCtx
 import timber.log.Timber
+import java.io.File
 
 val dataModule = module {
 
@@ -19,6 +25,12 @@ val dataModule = module {
         logging.setLevel(HttpLoggingInterceptor.Level.BASIC)
         OkHttpClient.Builder().run {
             addInterceptor(logging)
+            cache(
+                Cache(
+                    directory = File(appCtx.cacheDir, "http_cache"),
+                    maxSize = 50L * 1024L * 1024L // 50 MiB
+                )
+            )
             build()
         }
     }
@@ -42,18 +54,16 @@ val dataModule = module {
     }
 
     single<AlbumsRepository> {
-        AlbumsRepositoryStore(get(), get())
+        AlbumsRepositoryStore(get(), get(), get())
     }
 
     single { AlbumsMapper() }
 
-    // TODO-Scott (06 janv. 2022): add incrementally, start with remote
-    //
-    //    single {
-    //        Room.databaseBuilder(get(), AppDatabase::class.java, AppDatabase.DB_NAME)
-    //            .fallbackToDestructiveMigration()
-    //            .build()
-    //    }
-    //
-    //    single { get<AppDatabase>().albumDao() }
+    single {
+        Room.databaseBuilder(get(), AppDatabase::class.java, AppDatabase.DB_NAME)
+            .fallbackToDestructiveMigration()
+            .build()
+    }
+
+    single { get<AppDatabase>().albumDao() }
 }

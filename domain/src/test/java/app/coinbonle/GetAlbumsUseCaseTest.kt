@@ -1,15 +1,14 @@
-package app.coinbonle.data
+package app.coinbonle
 
-import app.coinbonle.data.core.CoinbonLeTest
-import app.coinbonle.data.local.AlbumLocal
-import app.coinbonle.data.remote.AlbumRemote
+import app.coinbonle.core.CoinbonLeTest
+import app.coinbonle.interactors.GetAlbumsUseCase
 import app.coinbonle.models.Album
 import com.google.common.truth.Truth
 import org.junit.Test
 
-class AlbumMapperTest : CoinbonLeTest() {
+class GetAlbumsUseCaseTest : CoinbonLeTest() {
 
-    private lateinit var albumsMapper: AlbumsMapper
+    private lateinit var getAlbumsUseCase: GetAlbumsUseCase
 
     override fun setUp() {
         super.setUp()

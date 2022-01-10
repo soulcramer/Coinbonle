@@ -2,7 +2,6 @@ package app.coinbonle.data.core
 
 import androidx.annotation.CallSuper
 import androidx.test.platform.app.InstrumentationRegistry
-import app.coinbonle.core.TimberUnitTestTree
 import app.coinbonle.data.dataModule
 import io.mockk.mockkClass
 import kotlinx.coroutines.ExperimentalCoroutinesApi
