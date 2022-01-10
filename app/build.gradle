@@ -1,0 +1,70 @@
+plugins {
+    id "com.android.application"
+    id "kotlin-android"
+    id "com.google.devtools.ksp"  version"1.5.31-1.0.1"
+    id "kotlin-kapt"
+}
+
+kapt {
+    correctErrorTypes = true
+    useBuildCache = true
+}
+
+android {
+    compileSdk buildConfig.compileSdk
+
+    defaultConfig {
+        applicationId "app.coinbonle"
+        minSdk buildConfig.minSdk
+        targetSdk buildConfig.targetSdk
+        versionCode 1
+        versionName "1.0"
+
+        // For now we're sticking to just shipping EN/FR
+        resConfigs "en", "fr"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+        }
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+    kotlinOptions {
+        jvmTarget = "11"
+    }
+
+    buildFeatures {
+        viewBinding = true
+        buildConfig = true
+    }
+}
+
+dependencies {
+
+    implementation "androidx.core:core-ktx:1.7.0"
+    implementation "androidx.appcompat:appcompat:1.4.0"
+    implementation "com.google.android.material:material:1.4.0"
+    implementation "androidx.constraintlayout:constraintlayout:2.1.2"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.4.0"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0"
+
+    implementation "com.squareup.retrofit2:retrofit:2.9.0"
+    implementation("com.squareup.moshi:moshi:1.13.0")
+//    ksp("com.squareup.moshi:moshi-kotlin-codegen:1.13.0")
+
+
+    debugImplementation("com.squareup.leakcanary:leakcanary-android:2.8")
+    implementation("com.squareup.leakcanary:plumber-android:2.8")
+
+    testImplementation "junit:junit:4.+"
+    androidTestImplementation "androidx.test.ext:junit:1.1.2"
+    androidTestImplementation "androidx.test.espresso:espresso-core:3.3.0"
+}
