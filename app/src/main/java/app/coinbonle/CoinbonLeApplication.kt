@@ -3,6 +3,8 @@ package app.coinbonle
 import android.app.Application
 import android.os.StrictMode
 import androidx.appcompat.app.AppCompatDelegate
+import app.coinbonle.ui.CoinbonLeUniFlowLogger
+import io.uniflow.core.logger.UniFlowLogger
 import kotlinx.coroutines.DEBUG_PROPERTY_NAME
 import kotlinx.coroutines.DEBUG_PROPERTY_VALUE_ON
 import org.koin.android.ext.koin.androidContext
@@ -24,6 +26,7 @@ class CoinbonLeApplication : Application() {
         }
         setupLog()
         setupDarkMode()
+        setupStrictMode()
     }
 
     private fun setupDarkMode() {
@@ -34,6 +37,7 @@ class CoinbonLeApplication : Application() {
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
             System.setProperty(DEBUG_PROPERTY_NAME, DEBUG_PROPERTY_VALUE_ON)
+            UniFlowLogger.init(CoinbonLeUniFlowLogger())
         }
     }
 

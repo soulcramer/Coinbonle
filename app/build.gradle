@@ -3,6 +3,7 @@ plugins {
     id "kotlin-android"
     id "com.google.devtools.ksp"  version"1.5.31-1.0.1"
     id "kotlin-kapt"
+    id "kotlin-parcelize"
 }
 
 kapt {
@@ -61,16 +62,22 @@ dependencies {
     implementation AndroidX.lifecycle.viewModelKtx
 
     implementation "com.airbnb.android:epoxy:_"
-    implementation "androidx.swiperefreshlayout:swiperefreshlayout:_"
+    implementation AndroidX.swipeRefreshLayout
     kapt "com.airbnb.android:epoxy-processor:_"
 
     implementation "org.uniflow-kt:uniflow-core:_"
     implementation "org.uniflow-kt:uniflow-android:_"
 
+    compileOnly "com.dropbox.mobile.store:store4:_"
+
 
     implementation Splitties.appctx
+    implementation Splitties.resources
+    implementation "com.louiscad.splitties:splitties-snackbar:_"
+    implementation Splitties.views
     implementation Koin.android
     implementation JakeWharton.timber
+    implementation Square.picasso
 
     debugImplementation(Square.leakCanary.android)
     implementation(Square.leakCanary.plumber)

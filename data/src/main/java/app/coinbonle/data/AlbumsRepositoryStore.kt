@@ -16,7 +16,7 @@ class AlbumsRepositoryStore(
 ) : AlbumsRepository {
 
     override val albumsStore: Store<Unit, List<Album>> = StoreBuilder.from(Fetcher.of<Unit, List<Album>> {
-        val thesaurus = albumsApi.getAlbums()
-        return@of mapper.mapFromRemote(thesaurus)
+        val remoteAlbums = albumsApi.getAlbums()
+        return@of mapper.mapFromRemote(remoteAlbums)
     }).build()
 }
