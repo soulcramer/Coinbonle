@@ -1,7 +1,7 @@
 # CoinbonLe
 Ce Projet à été build sur une machine sur Windows.
 
-Pour ce test j'ai utilisé les libraries suivante:
+Pour ce test j'ai utilisé les librairies suivante:
 
 - **[Uniflow](https://github.com/uniflow-kt/uniflow-kt)** - C'est la librarie d'architecture de présentation que j'ai utilisée dans ma dernière mission pour mettre en place du MVI, ça m'a facilité la mise en place de celle-ci étant donné que je connais comment fonctionnent les cas spéciaux comme la gestion des erreurs mais on peut très bien utiliser une implémentation faite main pour ce genre de petit projet ou plus lourd comme [Mavericks](https://github.com/airbnb/mavericks).
 - **[Epoxy](https://github.com/airbnb/epoxy)** - Idem que Uniflow, j'ai utilisé cette librairie récemment et elle était très utile lors de la composition de liste de composants dans un écran. C'est limite overkill de l'utiliser pour ce projet mais elle m'évite de devoir faire la configuration du recyclerview (clipping/optimisation en fonctionne de la taille des items), de créer un adapter avec un viewholder pour l'item d'album en combinant le tout avec une gestion de diffing.
