@@ -7,6 +7,7 @@ import app.coinbonle.interactors.GetAlbumsUseCase
 import app.coinbonle.models.Album
 import com.dropbox.android.external.store4.ResponseOrigin
 import com.dropbox.android.external.store4.StoreResponse
+import com.dropbox.android.external.store4.doThrow
 import io.uniflow.android.AndroidDataFlow
 import io.uniflow.core.coroutines.onFlow
 import io.uniflow.core.flow.data.UIEvent
@@ -25,7 +26,8 @@ class AlbumsViewModel(
     handle: SavedStateHandle, // Paging is needed otherwise it'll crash ass data is too big on process restoration
     private val getAlbumsUseCase: GetAlbumsUseCase,
     private val deleteCacheUseCase: DeleteCacheUseCase,
-) : AndroidDataFlow(savedStateHandle = handle, defaultState = AlbumsState()) {
+    defaultState: AlbumsState = AlbumsState(),
+) : AndroidDataFlow(savedStateHandle = handle, defaultState = defaultState) {
 
     private val pageFlow = MutableStateFlow(1)
 
@@ -75,14 +77,10 @@ class AlbumsViewModel(
                     }
                 }
                 is StoreResponse.Error -> {
-                    val error = when (albumsResponse) {
-                        is StoreResponse.Error.Exception -> albumsResponse.error
-                        is StoreResponse.Error.Message -> RuntimeException(albumsResponse.message)
-                    }
-                    sendEvent(AlbumsEvent.DisplayGenericError(error))
                     if (albumsResponse.origin == ResponseOrigin.Fetcher) {
-                        it.copy(isLoading = false)
-                    } else it
+                        setState(it.copy(isLoading = false))
+                    }
+                    albumsResponse.doThrow()
                 }
                 else -> error("Other state is NoNewData but we already filtered the in the usecase")
             }
@@ -95,10 +93,8 @@ class AlbumsViewModel(
 data class AlbumsState(
     val albums: List<Album> = emptyList(),
     val isLoading: Boolean = false,
-    val hasNewData: Boolean = true
 ) : UIState(), Parcelable
 
 sealed class AlbumsEvent : UIEvent() {
-    object FailRefresh : AlbumsEvent()
     data class DisplayGenericError(val error: Throwable) : AlbumsEvent()
 }

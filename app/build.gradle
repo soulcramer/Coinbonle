@@ -27,13 +27,37 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        debug {
+            storeFile file("../keystore.jks")
+            storePassword "coinbonle"
+            keyAlias "coinbonle"
+            keyPassword "coinbonle"
+        }
+        release {
+            storeFile file("../keystore.jks")
+            storePassword "coinbonle"
+            keyAlias "coinbonle"
+            keyPassword "coinbonle"
+        }
+    }
+
     buildTypes {
+        debug {
+            minifyEnabled false
+            shrinkResources false
+            signingConfig signingConfigs.debug
+            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+        }
+
         release {
             minifyEnabled true
             shrinkResources true
+            signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
@@ -50,6 +74,7 @@ android {
 
 dependencies {
 
+    implementation project(":core")
     implementation project(":domain")
     implementation project(":injector")
 
@@ -69,7 +94,6 @@ dependencies {
 
     compileOnly "com.dropbox.mobile.store:store4:_"
 
-
     implementation Splitties.appctx
     implementation Splitties.resources
     implementation Splitties.snackbar
@@ -82,7 +106,19 @@ dependencies {
     implementation(Square.leakCanary.plumber)
 
     testImplementation Testing.junit4
-    testImplementation AndroidX.test.ext.junit
+    testImplementation Testing.robolectric
+
+    testImplementation AndroidX.test.core
+    testImplementation AndroidX.archCore.testing
+    testImplementation AndroidX.test.ext.truth
+
+    testImplementation KotlinX.coroutines.test
+    testImplementation KotlinX.coroutines.debug
+    testImplementation CashApp.turbine
     testImplementation "org.uniflow-kt:uniflow-android-test:_"
+    testImplementation "com.dropbox.mobile.store:store4:_"
     testImplementation Testing.mockK
+
+    testImplementation Koin.test
+    testImplementation Koin.junit4
 }

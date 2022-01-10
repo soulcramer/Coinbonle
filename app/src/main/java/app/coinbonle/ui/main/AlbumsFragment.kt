@@ -21,6 +21,7 @@ class AlbumsFragment : Fragment(R.layout.albums_fragment) {
 
         binding.toolbar.setOnMenuItemClickListener { menuItem ->
             if (menuItem.itemId == R.id.delete_cache) {
+                binding.albumsRecyclerView.clear()
                 viewModel.deleteCache()
                 true
             } else {

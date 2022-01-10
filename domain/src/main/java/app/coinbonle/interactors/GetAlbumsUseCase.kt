@@ -8,8 +8,6 @@ import com.dropbox.android.external.store4.StoreResponse
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filterNot
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.onEach
-import timber.log.Timber
 
 class GetAlbumsUseCase(
     private val albumsRepository: AlbumsRepository,
@@ -18,9 +16,7 @@ class GetAlbumsUseCase(
     operator fun invoke(page: Int): Flow<StoreResponse<List<Album>>> {
         return albumsRepository.albumsStore.stream(
             StoreRequest.cached(page, refresh = true)
-        ).onEach {
-            Timber.d(" origin : ${it.origin}")
-        }.filterNot {
+        ).filterNot {
             // These states ar only used for fetcher
             // We get NoNewData when the server give us an empty result, ideally it should be considered an error way before we get here.
             it is StoreResponse.NoNewData

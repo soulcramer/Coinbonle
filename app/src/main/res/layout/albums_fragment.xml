@@ -26,9 +26,7 @@
             android:id="@+id/progress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:indeterminate="true"
-            app:indicatorColor="?colorSecondary"
-            app:trackColor="?colorSecondaryVariant" />
+            android:indeterminate="true" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <app.coinbonle.ui.main.AlbumsRecyclerView

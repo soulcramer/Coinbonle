@@ -26,7 +26,7 @@ class CoinbonLeApplication : Application() {
         }
         setupLog()
         setupDarkMode()
-//        setupStrictMode()
+        setupStrictMode()
     }
 
     private fun setupDarkMode() {
@@ -45,9 +45,7 @@ class CoinbonLeApplication : Application() {
         if (BuildConfig.DEBUG) {
             StrictMode.setThreadPolicy(
                 StrictMode.ThreadPolicy.Builder()
-                    .detectDiskReads()
-                    .detectDiskWrites()
-                    .detectNetwork()
+                    .detectAll()
                     .penaltyLog()
                     .build()
             )
