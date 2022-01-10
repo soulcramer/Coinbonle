@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import app.coinbonle.R
+import app.coinbonle.databinding.AlbumsFragmentBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class AlbumsFragment : Fragment(R.layout.albums_fragment) {
@@ -16,10 +17,11 @@ class AlbumsFragment : Fragment(R.layout.albums_fragment) {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(Binding, container, false)
+        return AlbumsFragmentBinding.inflate(inflater, container, false).root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val binding = AlbumsFragmentBinding.bind(view)
     }
 }

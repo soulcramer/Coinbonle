@@ -61,6 +61,7 @@ dependencies {
     implementation AndroidX.lifecycle.viewModelKtx
 
     implementation "com.airbnb.android:epoxy:_"
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:_"
     kapt "com.airbnb.android:epoxy-processor:_"
 
     implementation "org.uniflow-kt:uniflow-core:_"

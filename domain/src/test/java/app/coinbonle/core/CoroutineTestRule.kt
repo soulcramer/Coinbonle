@@ -1,6 +1,5 @@
-package app.coinbonle.data.core
+package app.coinbonle.core
 
-import app.coinbonle.core.DispatcherProvider
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

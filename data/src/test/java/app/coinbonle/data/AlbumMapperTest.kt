@@ -1,6 +1,6 @@
 package app.coinbonle.data
 
-import app.coinbonle.data.core.CoinbonLeTest
+import app.coinbonle.core.CoinbonLeTest
 import app.coinbonle.models.Album
 import com.google.common.truth.Truth
 import org.junit.Test

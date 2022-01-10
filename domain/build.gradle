@@ -16,6 +16,8 @@ android {
 }
 
 dependencies {
+    implementation project(":core")
+
     implementation KotlinX.coroutines.android
 
     implementation AndroidX.core.ktx
@@ -25,4 +27,16 @@ dependencies {
     implementation Splitties.appctx
     implementation Koin.android
     implementation JakeWharton.timber
+
+    testImplementation Testing.junit4
+    testImplementation Testing.robolectric
+
+    testImplementation AndroidX.test.core
+    testImplementation AndroidX.test.ext.truth
+
+    testImplementation KotlinX.coroutines.test
+    testImplementation Testing.mockK
+
+    testImplementation Koin.test
+    testImplementation Koin.junit4
 }

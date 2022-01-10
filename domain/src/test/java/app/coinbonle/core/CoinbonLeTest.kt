@@ -1,9 +1,8 @@
-package app.coinbonle.data.core
+package app.coinbonle.core
 
 import androidx.annotation.CallSuper
 import androidx.test.platform.app.InstrumentationRegistry
-import app.coinbonle.core.TimberUnitTestTree
-import app.coinbonle.data.dataModule
+import app.coinbonle.domainModule
 import io.mockk.mockkClass
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.After
@@ -38,7 +37,7 @@ abstract class CoinbonLeTest : KoinTest {
             InstrumentationRegistry.getInstrumentation().targetContext.applicationContext
         androidContext(androidContext)
         androidContext.injectAsAppCtx()
-        modules(dataModule)
+        modules(domainModule)
     }
 
     @CallSuper
